@@ -59,7 +59,7 @@ void test_PrintChar(void)
         };
 
         hd44780_print_char('a');
-        
+
         size_t i = 0;
         size_t cant_correctas = 0;
         for (; i < 6; i++)
@@ -74,28 +74,30 @@ void test_PrintChar(void)
         if(lcd.address != direccion)
                 gb_transmision_correcta = false;
 
-        
+        if(indice != i)
+                gb_transmision_correcta = false;
 
         TEST_ASSERT_TRUE(gb_transmision_correcta);      
 }
 
 /*
 // Se puede imprimir una cadena caracteres en pantalla.
-test_PrintString(void)
+void test_PrintString(void)
 {
 
         TEST_ASSERT_TRUE(gb_transmision_correcta);
 }
 
+
 // Se puede hacer parpadear el cursor.
-test_CursorBlinkOn(void)
+void test_CursorBlinkOn(void)
 {
 
         TEST_ASSERT_TRUE(gb_transmision_correcta);
 }
 
 // Se puede dejar de parpadear el cursor.
-test_CursorBlinkOff(void)
+void test_CursorBlinkOff(void)
 {
 
         TEST_ASSERT_TRUE(gb_transmision_correcta);
@@ -103,7 +105,7 @@ test_CursorBlinkOff(void)
 
 
 // Se puede limpiar la pantalla.
-test_ClearScreen(void)
+void test_ClearScreen(void)
 {
 
         TEST_ASSERT_TRUE(gb_transmision_correcta);
