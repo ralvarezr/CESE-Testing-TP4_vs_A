@@ -69,7 +69,6 @@ void test_PrintChar(void)
                         cant_correctas++;
         }
 
-        printf("Cant Correctas: %lu", cant_correctas);
         if(cant_correctas == i)
                 gb_transmision_correcta = true;
 
@@ -115,8 +114,6 @@ void test_PrintString(void)
                 }
         }
 
-        printf("Cant Correctas: %lu, i: %lu\n", cant_correctas, i);
-
         if (cant_correctas == i)
         {
                 gb_transmision_correcta = true;
@@ -160,7 +157,48 @@ void test_CursorBlinkOn(void)
                 }
         }
 
-        printf("Cant Correctas: %lu, i: %lu\n", cant_correctas, i);
+        if (cant_correctas == i)
+        {
+                gb_transmision_correcta = true;
+        }
+
+        if (lcd.address != direccion)
+        {
+                gb_transmision_correcta = false;
+        }
+
+        if (indice != i)
+        {
+                gb_transmision_correcta = false;
+        }
+
+        TEST_ASSERT_TRUE(gb_transmision_correcta);
+}
+
+
+// Se puede dejar de parpadear el cursor.
+void test_CursorBlinkOff(void)
+{
+
+        uint8_t trama[6] = {
+            0b00001000,
+            0b00001100,
+            0b00001000,
+            0b11101000,
+            0b11101100,
+            0b11101000};
+
+        hd44780_cursor_blink_off();
+
+        size_t i = 0;
+        size_t cant_correctas = 0;
+        for (; i < 6; i++)
+        {
+                if (trama[i] == datos[i])
+                {
+                        cant_correctas++;
+                }
+        }
 
         if (cant_correctas == i)
         {
@@ -180,19 +218,45 @@ void test_CursorBlinkOn(void)
         TEST_ASSERT_TRUE(gb_transmision_correcta);
 }
 
-/*
-// Se puede dejar de parpadear el cursor.
-void test_CursorBlinkOff(void)
-{
-
-        TEST_ASSERT_TRUE(gb_transmision_correcta);
-}
-
 
 // Se puede limpiar la pantalla.
 void test_ClearScreen(void)
 {
 
+        uint8_t trama[6] = {
+            0b00001000,
+            0b00001100,
+            0b00001000,
+            0b00011000,
+            0b00011100,
+            0b00011000};
+
+        hd44780_clear_screen();
+
+        size_t i = 0;
+        size_t cant_correctas = 0;
+        for (; i < 6; i++)
+        {
+                if (trama[i] == datos[i])
+                {
+                        cant_correctas++;
+                }
+        }
+
+        if (cant_correctas == i)
+        {
+                gb_transmision_correcta = true;
+        }
+
+        if (lcd.address != direccion)
+        {
+                gb_transmision_correcta = false;
+        }
+
+        if (indice != i)
+        {
+                gb_transmision_correcta = false;
+        }
+
         TEST_ASSERT_TRUE(gb_transmision_correcta);
 }
-*/
