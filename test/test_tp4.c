@@ -5,7 +5,7 @@ static hd44780_t lcd;
 
 static bool gb_transmision_correcta = false;
 
-static uint8_t datos[20];
+static uint8_t datos[200];
 static size_t indice = 0;
 static uint16_t direccion;
 //************************** Funciones de mock *****************
@@ -44,6 +44,7 @@ void setUp(void)
         hd44780_init_driver(lcd);
 
         indice = 0;
+        gb_transmision_correcta = false;
 }
 
 //Se puede imprimir un caracteres en pantalla.
@@ -55,7 +56,7 @@ void test_PrintChar(void)
             0b01101001,
             0b00011001,
             0b00011101,
-            0b00011001,
+            0b00011001
         };
 
         hd44780_print_char('a');
@@ -68,6 +69,7 @@ void test_PrintChar(void)
                         cant_correctas++;
         }
 
+        printf("Cant Correctas: %lu", cant_correctas);
         if(cant_correctas == i)
                 gb_transmision_correcta = true;
 
@@ -77,13 +79,58 @@ void test_PrintChar(void)
         if(indice != i)
                 gb_transmision_correcta = false;
 
-        TEST_ASSERT_TRUE(gb_transmision_correcta);      
+        TEST_ASSERT_TRUE(gb_transmision_correcta);
+
 }
 
-/*
+
 // Se puede imprimir una cadena caracteres en pantalla.
 void test_PrintString(void)
 {
+
+        uint8_t trama[12] = {
+            0b01101001,
+            0b01101101,
+            0b01101001,
+            0b00011001,
+            0b00011101,
+            0b00011001,
+            0b01001001,
+            0b01001101,
+            0b01001001,
+            0b11001001,
+            0b11001101,
+            0b11001001
+            };
+
+        hd44780_print_string("aL");
+
+        size_t i = 0;
+        size_t cant_correctas = 0;
+        for (; i < 12; i++)
+        {
+                if (trama[i] == datos[i])
+                {
+                        cant_correctas++;
+                }
+        }
+
+        printf("Cant Correctas: %lu, i: %lu\n", cant_correctas, i);
+
+        if (cant_correctas == i)
+        {
+                gb_transmision_correcta = true;
+        }
+
+        if (lcd.address != direccion)
+        {
+                gb_transmision_correcta = false;
+        }
+
+        if (indice != i)
+        {
+                gb_transmision_correcta = false;
+        }
 
         TEST_ASSERT_TRUE(gb_transmision_correcta);
 }
@@ -92,10 +139,48 @@ void test_PrintString(void)
 // Se puede hacer parpadear el cursor.
 void test_CursorBlinkOn(void)
 {
+        uint8_t trama[6] = {
+            0b00001000,
+            0b00001100,
+            0b00001000,
+            0b11111000,
+            0b11111100,
+            0b11111000
+            };
+
+        hd44780_cursor_blink_on();
+
+        size_t i = 0;
+        size_t cant_correctas = 0;
+        for (; i < 6; i++)
+        {
+                if (trama[i] == datos[i])
+                {
+                        cant_correctas++;
+                }
+        }
+
+        printf("Cant Correctas: %lu, i: %lu\n", cant_correctas, i);
+
+        if (cant_correctas == i)
+        {
+                gb_transmision_correcta = true;
+        }
+
+        if (lcd.address != direccion)
+        {
+                gb_transmision_correcta = false;
+        }
+
+        if (indice != i)
+        {
+                gb_transmision_correcta = false;
+        }
 
         TEST_ASSERT_TRUE(gb_transmision_correcta);
 }
 
+/*
 // Se puede dejar de parpadear el cursor.
 void test_CursorBlinkOff(void)
 {
